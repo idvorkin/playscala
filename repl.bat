@@ -1,0 +1,2 @@
+
+call sbt.bat console
