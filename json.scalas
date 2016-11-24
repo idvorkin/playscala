@@ -7,12 +7,19 @@ import scala.io.Source
 // http://dispatch.databinder.net/Dispatch.html
 //
 
+
 // val makes the properties available as getters.
 case class Headers(
   val Host:String,
-  val Connection:String )
+  val Connection:String ,
+  val Accept:String
+  )
 
-case class Model(val method:String, val headers: Headers )
+case class Model(val method:String, 
+    val headers: Headers, 
+    val client_ip:String,
+    val info:String
+  )
 
 // dunno what these format things are. 
 implicit val headerFormat = Json.format[Headers]
