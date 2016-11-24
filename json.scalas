@@ -1,20 +1,31 @@
+// vim: ft=scala
+/// sigh not sure how to stop sbt from thinking it should compile this - so just making it a scala's' file for now. 
+//
 import scala.io.Source
 
 // FUTURE: using dispatch
 // http://dispatch.databinder.net/Dispatch.html
+//
 
+// val makes the properties available as getters.
+case class Headers(
+  val Host:String,
+  val Connection:String )
 
-// val makes
-class Headers(val Host:String)
-class Model(val method:String, val headers: Headers )
+case class Model(val method:String, val headers: Headers )
 
+// dunno what these format things are. 
 implicit val headerFormat = Json.format[Headers]
 implicit val modelFormat = Json.format[Model]
 
-def GetUrl = {
+// Use a default http downloader.
+def echoResponse = {
   val echoService = "http://scooterlabs.com/echo.json"
   Source.fromURL(echoService) mkString
 }
 
-val js = Json.parse(GetUrl)
-Json.fromJson[Model](js).get
+val js = Json.parse(echoResponse)
+
+// .get returns the value, allowing us to do error handling.
+//
+Json.fromJson[Model](js) get
