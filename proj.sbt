@@ -2,7 +2,6 @@
 name := "scalaz-demo"
  
 version := "0.2"
- 
 
 resolvers += "Typesafe Repo" at "http://repo.typesafe.com/typesafe/releases/"
 
