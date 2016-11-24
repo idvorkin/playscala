@@ -11,8 +11,13 @@ import scalafx.scene.layout.HBox
 import scalafx.scene.paint.Color._
 import scalafx.scene.paint.{Stops, LinearGradient}
 import scalafx.scene.text.Text
+import scalafx.scene.web.{HTMLEditor, WebView}
 
+
+// Web View Example --https://github.com/scalafx/ProScalaFX/blob/master/src/proscalafx/ch05/ui/StarterAppMain.scala 
 object ScalaFXHelloWorld extends JFXApp {
+  val wv  = new WebView()
+  wv.engine.load("https://www.google.com")
 
   stage = new PrimaryStage {
     title = "ScalaFX Hello World"
@@ -21,6 +26,7 @@ object ScalaFXHelloWorld extends JFXApp {
       content = new HBox {
         padding = Insets(20)
         children = Seq(
+          wv, 
           new Text {
             text = "Hello "
             style = "-fx-font-size: 48pt"
@@ -46,5 +52,7 @@ object ScalaFXHelloWorld extends JFXApp {
     }
   }
 }
+
+
 println ("Execute via: ")
 println ("ScalaFXHelloWorld.main(Array())")
