@@ -13,11 +13,30 @@ import scalafx.scene.paint.{Stops, LinearGradient}
 import scalafx.scene.text.Text
 import scalafx.scene.web.{HTMLEditor, WebView}
 
+// State management.
+import javafx.beans.value.ChangeListener
+import javafx.concurrent.Worker.{ State => WorkerState }
+import javafx.beans.value.ObservableValue
+
 
 // Web View Example --https://github.com/scalafx/ProScalaFX/blob/master/src/proscalafx/ch05/ui/StarterAppMain.scala 
 object ScalaFXHelloWorld extends JFXApp {
   val wv  = new WebView()
+
+  def onLoad(webView: WebView)(f:(WorkerState, WorkerState) => Unit): Unit = {
+    webView.engine.getLoadWorker().stateProperty().addListener(
+      new ChangeListener[WorkerState]() {
+        def changed(obs: ObservableValue[_ <: WorkerState],
+              oldState: WorkerState, newState: WorkerState): Unit = {
+          f(oldState, newState)
+        }
+      }
+    )
+  }
   wv.engine.load("https://www.google.com")
+    onLoad(wv) ((oldState:WorkerState, newState:WorkerState) => {
+      val loc =  wv.engine.location()
+    println (s" $oldState,$newState :: $loc")})
 
   stage = new PrimaryStage {
     title = "ScalaFX Hello World"
@@ -53,6 +72,7 @@ object ScalaFXHelloWorld extends JFXApp {
   }
 }
 
-
-println ("Execute via: ")
-println ("ScalaFXHelloWorld.main(Array())")
+def runUX()
+{
+  ScalaFXHelloWorld.main(Array())
+}
