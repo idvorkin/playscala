@@ -13,6 +13,7 @@ libraryDependencies ++= Seq(
 
 libraryDependencies += "com.typesafe.play" %% "play-json" % "2.3.4"
 libraryDependencies += "org.scalafx" %% "scalafx" % "8.0.92-R10"
+libraryDependencies += "net.databinder.dispatch" %% "dispatch-core" % "0.11.2"
 
 
 scalacOptions += "-deprecation"

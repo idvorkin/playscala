@@ -18,6 +18,112 @@ import javafx.beans.value.ChangeListener
 import javafx.concurrent.Worker.{ State => WorkerState }
 import javafx.beans.value.ObservableValue
 
+// Dispatch
+import dispatch._, Defaults._
+
+
+// Huh, why don't these be in scope in LiveAuth??
+object OneNoteAppId
+{
+	val ClientId = "0000000048130833"
+	val Secret = "40lRVb3d17e0AsQh3n0oFMXr3q-nkjPw"
+}
+
+// OneNote Auth: https://msdn.microsoft.com/en-us/office/office365/howto/onenote-auth#sign-in-msa
+object LiveAuth { 
+
+	def CreateClientAccessCodeUrl() = 
+	{
+        val clientId = "0000000048130833"
+        val secret = "40lRVb3d17e0AsQh3n0oFMXr3q-nkjPw"
+		val authorizeBase = "https://login.live.com/oauth20_authorize.srf";
+	    val wlCallBackUri = "https://login.live.com/oauth20_desktop.srf";
+	    val scopes = "wl.signin Office.onenote_create"
+        val scopesEscaped = ""
+        val queryParams = Map(
+          "client_id" -> clientId,
+          "redirect_uri" -> wlCallBackUri,
+          "response_type" -> "code",
+          "scope" -> scopes
+          )
+
+        url(authorizeBase) <<? queryParams
+	}
+
+    /*
+	private static Uri RunWebBrowserTillReturnedToUrl(Uri uri, Func<string, bool> stopCondition)
+	{
+		var window = new Form()
+		{
+			Width = 440,
+			Height = 600
+		};
+
+		Uri url = null;
+
+		Action<object, WebBrowserDocumentCompletedEventArgs> pageLoaded = (o, args) =>
+	   {
+		   url = args.Url;
+		   if (stopCondition(url.OriginalString))
+		   {
+			   window.Close();
+		   }
+	   };
+
+		var web = new WebBrowser()
+		{
+			Width = window.Width,
+			Height = window.Height,
+			Url = uri
+		};
+		web.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(pageLoaded);
+		window.Controls.Add(web);
+		window.ShowDialog();
+		return url;
+	}
+
+	private string GetOAuthClientAccessCode()
+	{
+		string code = "";
+
+		// The WebBrower must run on an stA thread.
+		var staThread = new Thread(() =>
+		{
+			var accessTokenUrl = CreateClientAccessCodeUrl(Scopes, client.ClientId);
+			var urlWithClientAccessCode = RunWebBrowserTillReturnedToUrl(accessTokenUrl, (url) => (url.Contains("error") || url.Contains("code=")));
+			if (urlWithClientAccessCode != null)
+			{
+				// XXX: This does nto handle errors.
+				var queryParams =
+					 Regex.Matches(urlWithClientAccessCode.Query, "([^?=&]+)(=([^&]*))?").Cast<Match>().ToDictionary(x => x.Groups[1].Value, x => x.Groups[3].Value);
+				code = queryParams["code"];
+			}
+		});
+
+		staThread.SetApartmentState(ApartmentState.STA);
+		staThread.Start();
+		staThread.Join();
+		return code;
+	}
+
+	public String GetOAuthUserAccessToken()
+	{
+		var userAccessTokenParameters = new NameValueCollection();
+		userAccessTokenParameters["client_id"] = client.ClientId;
+		userAccessTokenParameters["client_secret"] = client.Secret;
+		userAccessTokenParameters["redirect_uri"] = wlCallBackUri;
+		userAccessTokenParameters["grant_type"] = "authorization_code";
+		userAccessTokenParameters["code"] = GetOAuthClientAccessCode();
+
+		var wc = new WebClient();
+		var accessTokenUrl = "https://login.live.com/oauth20_token.srf";
+		var response = wc.UploadValues(accessTokenUrl, "POST", userAccessTokenParameters);
+		var reponseAsString = Encoding.Default.GetString(response);
+		var parsedToken = JToken.Parse(reponseAsString);
+		return parsedToken.Value<string>("access_token");
+	}
+    */
+}
 
 // Web View Example --https://github.com/scalafx/ProScalaFX/blob/master/src/proscalafx/ch05/ui/StarterAppMain.scala 
 object ScalaFXHelloWorld extends JFXApp {
@@ -72,7 +178,7 @@ object ScalaFXHelloWorld extends JFXApp {
   }
 }
 
-def runUX()
+object Main
 {
-  ScalaFXHelloWorld.main(Array())
+  def Run = { ScalaFXHelloWorld.main(Array())}
 }
