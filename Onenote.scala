@@ -5,34 +5,6 @@ import dispatch.Defaults._
 import dispatch._
 import play.api.libs.json._
 
-case class Notebook(
-                     name: String
-                   )
-
-case class NotebookList(
-                         value: List[Notebook]
-                       )
-
-case class Link(
-                 href: String
-               )
-
-case class PageLinks(
-                      oneNoteClientUrl: Link,
-                      oneNoteWebUrl: Link
-                    )
-
-case class Page(
-                 id: String,
-                 self: String,
-                 title: String,
-                 links: PageLinks,
-                 contentUrl: String)
-
-case class PageList(
-                     value: List[Page]
-                   )
-
 object OneNoteAuth {
   def addHeaders(request: Req): Req = {
     val path = "C:/Users/idvor/AppData/Local/Temp/saveOneNoteAccessToken_9352"
@@ -66,6 +38,7 @@ object OneNote {
   implicit val __pageList = Json.format[PageList]
   implicit val notebookFormat = Json.format[Notebook]
   implicit val notebookListFormat = Json.format[NotebookList]
+  implicit val __copyBody = Json.format[CopyBody]
 
   def notebooksRequest() = {
     baseRequest() / "me" / "notes" / "notebooks"
@@ -77,7 +50,7 @@ object OneNote {
     var body = r1.getResponseBody()
     val json = Json.parse(body)
     Json.fromJson[PageList](json) get
-
+   /// implicit val residentReads = Json.reads[Resident]
   }
 
 
@@ -93,7 +66,21 @@ object OneNote {
   def pageContent(page: Page) = {
     val r = Http(OneNoteAuth.addHeaders(url(page.contentUrl)))
     r().getResponseBody()
+  }
 
+  def copyPage(page: Page) = {
+    // https://msdn.microsoft.com/en-us/office/office365/howto/onenote-copy
+
+    val section = "87eb8b50-7edc-45dc-9163-2fd4556d4114"
+
+    // Create a post
+    val copyUrl = url (page.self) / "copyToSection"
+    var copyParams = Json.stringify(Json.toJson(CopyBody(id=section, renameAs="CopiedIgor")))
+    // val residentJson: JsValue = Json.toJson(resident)
+
+    val post = OneNoteAuth.addHeaders(copyUrl) << copyParams
+    val r = Http(OneNoteAuth.addHeaders(post))
+    r().getResponseBody()
   }
 }
 
@@ -117,7 +104,6 @@ object LiveAuth {
 
     url(authorizeBase) <<? queryParams
 	}
-
 
       // var t = client.GetStringAsync("/me/notes/pages/0-aedc66b0713504be326f0894e8f70748!1-922579950926BF9E!1760/content");
 }
