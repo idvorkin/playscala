@@ -21,9 +21,20 @@ case class Model(val method:String,
     val info:String
   )
 
+case class Notebook(
+  val name:String
+  )
+
+case class NotebookList(
+  val value:List[Notebook]
+  )
+
+
 // dunno what these format things are. 
 implicit val headerFormat = Json.format[Headers]
 implicit val modelFormat = Json.format[Model]
+implicit val notebookFormat = Json.format[Notebook]
+implicit val notebookListFormat = Json.format[NotebookList]
 
 // Use a default http downloader.
 def echoResponse = {

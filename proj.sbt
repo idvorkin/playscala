@@ -14,11 +14,13 @@ libraryDependencies ++= Seq(
 libraryDependencies += "com.typesafe.play" %% "play-json" % "2.3.4"
 libraryDependencies += "org.scalafx" %% "scalafx" % "8.0.92-R10"
 libraryDependencies += "net.databinder.dispatch" %% "dispatch-core" % "0.11.2"
+libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.1.2"
 
 
 scalacOptions += "-deprecation"
  
 initialCommands in console := """
     | import play.api.libs.json._
+    | import dispatch._, Defaults._
     |""".stripMargin
 
