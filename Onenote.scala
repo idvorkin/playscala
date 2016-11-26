@@ -1,4 +1,6 @@
 // Dispatch
+
+// Do a continous compile w/ ~compile.
 import dispatch.Defaults._
 import dispatch._
 import play.api.libs.json._
@@ -21,6 +23,8 @@ case class PageLinks(
                     )
 
 case class Page(
+                 id: String,
+                 self: String,
                  title: String,
                  links: PageLinks,
                  contentUrl: String)
@@ -55,8 +59,7 @@ object OneNoteAppId
 
 // dunno what these format things are.
 
-object OneNote
-{
+object OneNote {
   implicit val __link1 = Json.format[Link]
   implicit val __pageLinks = Json.format[PageLinks]
   implicit val __page = Json.format[Page]
@@ -74,7 +77,9 @@ object OneNote
     var body = r1.getResponseBody()
     val json = Json.parse(body)
     Json.fromJson[PageList](json) get
+
   }
+
 
   def searchPagesRequest(title: String) = {
     var filter = s"title eq '$title'"
@@ -90,27 +95,25 @@ object OneNote
     r().getResponseBody()
 
   }
-
-
 }
 
 // OneNote Auth: https://msdn.microsoft.com/en-us/office/office365/howto/onenote-auth#sign-in-msa
-object LiveAuth { 
+object LiveAuth {
 
-	def CreateClientAccessCodeUrl() = 
-	{
-        val clientId = "0000000048130833"
-        val secret = "40lRVb3d17e0AsQh3n0oFMXr3q-nkjPw" // Bizarre - not sure why can't acess this  off OneNoteAppId
-  val authorizeBase = "https://login.live.com/oauth20_authorize.srf"
+  def CreateClientAccessCodeUrl() = {
+    val clientId = "0000000048130833"
+    val secret = "40lRVb3d17e0AsQh3n0oFMXr3q-nkjPw"
+    // Bizarre - not sure why can't acess this  off OneNoteAppId
+    val authorizeBase = "https://login.live.com/oauth20_authorize.srf"
     val wlCallBackUri = "https://login.live.com/oauth20_desktop.srf"
-	    val scopes = "wl.signin Office.onenote_create"
-        val scopesEscaped = ""
-        val queryParams = Map(
-          "client_id" -> clientId,
-          "redirect_uri" -> wlCallBackUri,
-          "response_type" -> "code",
-          "scope" -> scopes
-          )
+    val scopes = "wl.signin Office.onenote_create"
+    val scopesEscaped = ""
+    val queryParams = Map(
+      "client_id" -> clientId,
+      "redirect_uri" -> wlCallBackUri,
+      "response_type" -> "code",
+      "scope" -> scopes
+    )
 
     url(authorizeBase) <<? queryParams
 	}
