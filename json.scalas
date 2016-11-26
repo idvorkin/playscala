@@ -27,6 +27,12 @@ case class Notebook(
 
 case class NotebookList(
   val value:List[Notebook]
+
+  )
+case class Page(
+  )
+case class PageList(
+  val value:List[Page]
   )
 
 
